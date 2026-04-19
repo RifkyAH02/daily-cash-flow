@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Expense Tracker</title>
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#8b5cf6">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div id="splash-screen">
+        <div class="splash-content">
+            <img src="logo.png" alt="Logo" class="splash-logo">
+            <h1 class="splash-text">Rifky Cash Flow</h1>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="app-layout">
+        <aside class="sidebar glass-card">
+            <div class="sidebar-header">
+                <h2><img src="logo.png" alt="L" class="mini-logo"> Rifky CF</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-target="dashboard-page">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-target="savings-page">
+                    <i class="fa-solid fa-piggy-bank"></i> Tabungan
+                </a>
+            </nav>
+        </aside>
+
+        <div class="main-wrapper">
+            <!-- DASHBOARD PAGE -->
+            <div id="dashboard-page" class="page active">
+                <div class="container glass-panel">
+                    <header>
+                        <h1><img src="logo.png" alt="L" class="mini-logo"> Dashboard</h1>
+                        <div class="header-actions">
+                            <button id="addBudgetBtn" class="btn btn-primary" aria-label="Tambah Budget">
+                                <i class="fa-solid fa-plus"></i> Tambah Budget
+                            </button>
+                            <button id="transferBtn" class="btn btn-outline" aria-label="Pindah Dana">
+                                <i class="fa-solid fa-right-left"></i> Pindah Dana
+                            </button>
+                            <button id="setBudgetBtn" class="btn btn-outline" aria-label="Set Budget Bulanan">
+                                <i class="fa-solid fa-gear"></i> Atur Budget
+                            </button>
+                            <button id="resetDataBtn" class="btn btn-outline" style="color: var(--danger)" aria-label="Reset Semua Data">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </header>
+
+        <section class="dashboard">
+            <div class="card glass-card balance-card">
+                <h3>Sisa Saldo</h3>
+                <h2 id="balanceAmount" class="amount positive">Rp 0</h2>
+                <div class="wallet-grid">
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-money-bill"></i> Cash</span>
+                        <span id="balanceCash" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-building-columns"></i> Mandiri</span>
+                        <span id="balanceMandiri" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-building-columns"></i> BNI</span>
+                        <span id="balanceBni" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-wallet"></i> DANA</span>
+                        <span id="balanceDana" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-bag-shopping"></i> Shopee</span>
+                        <span id="balanceShopeepay" class="wallet-value">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card glass-card income-card">
+                <h3>Total Budget</h3>
+                <h2 id="budgetAmount" class="amount info">Rp 0</h2>
+                <div class="progress-bar-bg">
+                    <div id="budgetProgress" class="progress-bar"></div>
+                </div>
+                <div class="wallet-grid">
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-money-bill"></i> Cash</span>
+                        <span id="budgetTotalCash" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-building-columns"></i> Mandiri</span>
+                        <span id="budgetTotalMandiri" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-building-columns"></i> BNI</span>
+                        <span id="budgetTotalBni" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-wallet"></i> DANA</span>
+                        <span id="budgetTotalDana" class="wallet-value">Rp 0</span>
+                    </div>
+                    <div class="wallet-item">
+                        <span class="wallet-name"><i class="fa-solid fa-bag-shopping"></i> Shopee</span>
+                        <span id="budgetTotalShopeepay" class="wallet-value">Rp 0</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card glass-card expense-card">
+                <h3>Total Pengeluaran</h3>
+                <h2 id="expenseAmount" class="amount negative">Rp 0</h2>
+                <p class="subtitle">Bulan ini</p>
+            </div>
+        </section>
+
+        <div class="main-content">
+            <div class="card glass-card add-expense-section">
+                <h3><i class="fa-solid fa-circle-plus"></i> Tambah Transaksi</h3>
+                <form id="transactionForm">
+                    <div class="form-group pb-1">
+                        <label>Sumber Dana</label>
+                        <div class="category-grid source-category-grid" style="margin-bottom: 15px;">
+                            <label class="category-option">
+                                <input type="radio" name="paymentOption" value="Cash" checked>
+                                <div class="cat-box"><i class="fa-solid fa-money-bill"></i> Cash</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="paymentOption" value="Mandiri">
+                                <div class="cat-box"><i class="fa-solid fa-building-columns"></i> Mandiri</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="paymentOption" value="BNI">
+                                <div class="cat-box"><i class="fa-solid fa-building-columns"></i> BNI</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="paymentOption" value="DANA">
+                                <div class="cat-box"><i class="fa-solid fa-wallet"></i> DANA</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="paymentOption" value="ShopeePay">
+                                <div class="cat-box"><i class="fa-solid fa-bag-shopping"></i> ShopeePay</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="desc">Deskripsi</label>
+                        <input type="text" id="desc" placeholder="Contoh: Makan siang" required autocomplete="off">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="amount">Jumlah (Rp)</label>
+                            <input type="number" id="amount" placeholder="0" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Tanggal</label>
+                            <input type="date" id="date" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Kategori</label>
+                        <div class="category-grid">
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Makanan" checked>
+                                <div class="cat-box"><i class="fa-solid fa-utensils"></i> Makanan</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Transportasi">
+                                <div class="cat-box"><i class="fa-solid fa-car"></i> Transport</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Belanja">
+                                <div class="cat-box"><i class="fa-solid fa-cart-shopping"></i> Belanja</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Hiburan">
+                                <div class="cat-box"><i class="fa-solid fa-gamepad"></i> Hiburan</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Tagihan">
+                                <div class="cat-box"><i class="fa-solid fa-file-invoice"></i> Tagihan</div>
+                            </label>
+                            <label class="category-option">
+                                <input type="radio" name="category" value="Lainnya">
+                                <div class="cat-box"><i class="fa-solid fa-ellipsis"></i> Lainnya</div>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Simpan Transaksi</button>
+                </form>
+            </div>
+
+            <div class="card glass-card history-section">
+                <div class="history-header">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Terakhir</h3>
+                    <div class="filter-group">
+                        <select id="filterMonth" class="glas-select">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                </div>
+                <ul id="transactionList" class="transaction-list">
+                    <!-- Transactions will be added here via JS -->
+                </ul>
+                <div id="emptyState" class="empty-state">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                    <p>Belum ada transaksi bulan ini.</p>
+                </div>
+            </div>
+            
+            <div class="card glass-card chart-section">
+                <h3><i class="fa-solid fa-chart-pie"></i> Analisis Kategori</h3>
+                <div class="chart-container">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card glass-card chart-section">
+                <h3><i class="fa-solid fa-chart-column"></i> Tren Harian</h3>
+                <div class="chart-container">
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card glass-card summary-section">
+                <h3><i class="fa-solid fa-list-check"></i> Ringkasan Bulan Ini</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="summary-label">Batas Aman/Hari</span>
+                        <span id="safeDaily" class="summary-value positive">Rp 0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Rata Pengeluaran/Hari</span>
+                        <span id="avgDaily" class="summary-value">Rp 0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Kategori Terbesar</span>
+                        <span id="topCategory" class="summary-value">-</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Transaksi Terbesar</span>
+                        <span id="topTransaction" class="summary-value">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+            </div>
+                </div>
+            </div>
+
+            <!-- SAVINGS PAGE -->
+            <div id="savings-page" class="page">
+                <div class="container glass-panel">
+                    <header>
+                        <h1><img src="logo.png" alt="L" class="mini-logo"> Tabungan Saya</h1>
+                        <div class="header-actions">
+                            <button id="addSavingsBtn" class="btn btn-primary" aria-label="Menabung">
+                                <i class="fa-solid fa-plus"></i> Menabung
+                            </button>
+                            <button id="useSavingsBtn" class="btn btn-outline" aria-label="Pakai Tabungan">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> Pakai Tabungan
+                            </button>
+                        </div>
+                    </header>
+
+                    <section class="dashboard" style="grid-template-columns: 1fr; margin-bottom: 25px;">
+                        <div class="card glass-card balance-card" style="text-align: center; padding: 40px; background: rgba(59, 130, 246, 0.1);">
+                            <h3 style="justify-content: center; font-size: 1.3rem;">Total Aset Tabungan</h3>
+                            <h2 id="totalSavingsAmount" class="amount positive" style="font-size: 3.5rem;">Rp 0</h2>
+                            <p style="color: var(--text-secondary); margin-top: 10px;">Dana dijamin terpisah dari budget harian Anda</p>
+                        </div>
+                    </section>
+                    
+                    <section class="history-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="history-section card glass-card">
+                            <div class="history-header">
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> Riwayat Menabung</h3>
+                            </div>
+                            <ul id="savingsHistoryList" class="transaction-list">
+                                <!-- Savings history will be added here via JS -->
+                            </ul>
+                            <div id="emptySavingsState" class="empty-state">
+                                <i class="fa-solid fa-piggy-bank"></i>
+                                <p>Belum ada riwayat tabungan.</p>
+                            </div>
+                        </div>
+
+                        <div class="history-section card glass-card">
+                            <div class="history-header">
+                                <h3><i class="fa-solid fa-hand-holding-dollar"></i> Riwayat Penggunaan</h3>
+                            </div>
+                            <ul id="savingsUsageHistoryList" class="transaction-list">
+                                <!-- Usage history will be added here via JS -->
+                            </ul>
+                            <div id="emptyUsageState" class="empty-state">
+                                <i class="fa-solid fa-receipt"></i>
+                                <p>Belum ada tabungan yang dipakai.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+        </div> <!-- end main-wrapper -->
+    </div> <!-- end app-layout -->
+
+    <!-- Budget Modal -->
+    <div id="budgetModal" class="modal-overlay">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Atur Budget Bulanan</h3>
+                <button id="closeModal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="budgetForm">
+                <div class="form-group">
+                    <label for="budgetCashInput">Target Budget Cash</label>
+                    <input type="number" id="budgetCashInput" placeholder="0" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="budgetMandiriInput">Target Budget Mandiri</label>
+                    <input type="number" id="budgetMandiriInput" placeholder="0" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="budgetBniInput">Target Budget BNI</label>
+                    <input type="number" id="budgetBniInput" placeholder="0" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="budgetDanaInput">Target Budget DANA</label>
+                    <input type="number" id="budgetDanaInput" placeholder="0" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="budgetShopeepayInput">Target Budget ShopeePay</label>
+                    <input type="number" id="budgetShopeepayInput" placeholder="0" required min="0">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Simpan Budget</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Budget Modal -->
+    <div id="addBudgetModal" class="modal-overlay">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Tambah Budget Tambahan</h3>
+                <button id="closeAddBudgetModal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="addBudgetForm">
+                <div class="form-group">
+                    <label>Tujuan Top Up</label>
+                    <select id="addBudgetTarget" class="glas-select" style="width:100%; margin-bottom: 15px;">
+                        <option value="Cash">Tunai (Cash)</option>
+                        <option value="Mandiri">Bank Mandiri</option>
+                        <option value="BNI">Bank BNI</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="addBudgetInput">Nominal Tambahan (Rp)</label>
+                    <input type="number" id="addBudgetInput" placeholder="Contoh: 1000000" required min="1">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Tambah</button>
+            </form>
+            <div class="budget-history-section" style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">
+                <h4 style="margin-bottom: 15px; font-size: 0.95rem; color: var(--text-secondary);">Riwayat Tambahan Budget</h4>
+                <ul id="budgetHistoryList" class="transaction-list" style="max-height: 200px;">
+                    <!-- Budget history items will be added here -->
+                </ul>
+                <div id="emptyBudgetHistory" class="empty-state" style="padding: 15px 0;">
+                    <p style="font-size: 0.85rem;">Belum ada riwayat tambahan.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal-overlay">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Pindah Dana</h3>
+                <button id="closeTransferModal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="transferForm">
+                <div class="form-group">
+                    <label>Transfer Dari</label>
+                    <select id="transferFrom" class="glas-select" style="width: 100%; margin-bottom: 15px;">
+                        <option value="Cash">Tunai (Cash)</option>
+                        <option value="Mandiri">Bank Mandiri</option>
+                        <option value="BNI">Bank BNI</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Transfer Ke</label>
+                    <select id="transferTo" class="glas-select" style="width: 100%; margin-bottom: 15px;">
+                        <option value="Cash">Tunai (Cash)</option>
+                        <option value="Mandiri">Bank Mandiri</option>
+                        <option value="BNI">Bank BNI</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transferInput">Nominal Transfer (Rp)</label>
+                    <input type="number" id="transferInput" placeholder="Contoh: 200000" required min="1">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Transfer Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Savings Modal -->
+    <div id="savingsModal" class="modal-overlay">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Setor ke Tabungan</h3>
+                <button id="closeSavingsModal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="savingsForm">
+                <div class="form-group">
+                    <label>Tarik dari Sumber Dana</label>
+                    <select id="savingsSource" class="glas-select" style="width: 100%; margin-bottom: 15px;">
+                        <option value="Cash">Tunai (Cash)</option>
+                        <option value="Mandiri">Bank Mandiri</option>
+                        <option value="BNI">Bank BNI</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="savingsInput">Nominal Disisihkan (Rp)</label>
+                    <input type="number" id="savingsInput" placeholder="Contoh: 500000" required min="1">
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px;">*Akan memotong saldo dari dompet Anda.</p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Setor Sekarang</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Use Savings Modal -->
+    <div id="useSavingsModal" class="modal-overlay">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h3>Pakai Dana Tabungan</h3>
+                <button id="closeUseSavingsModal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="useSavingsForm">
+                <div class="form-group">
+                    <label>Pindahkan ke Dompet</label>
+                    <select id="useSavingsTarget" class="glas-select" style="width: 100%; margin-bottom: 15px;">
+                        <option value="Cash">Tunai (Cash)</option>
+                        <option value="Mandiri">Bank Mandiri</option>
+                        <option value="BNI">Bank BNI</option>
+                        <option value="DANA">DANA</option>
+                        <option value="ShopeePay">ShopeePay</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="useSavingsInput">Nominal yang Dipakai (Rp)</label>
+                    <input type="number" id="useSavingsInput" placeholder="Contoh: 200000" required min="1">
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 5px;">*Dana akan dikembalikan ke dompet utama Anda.</p>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Gunakan Dana</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" data-target="dashboard-page">
+            <i class="fa-solid fa-chart-pie"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-target="savings-page">
+            <i class="fa-solid fa-piggy-bank"></i>
+            <span>Tabungan</span>
+        </a>
+    </nav>
+
+    <!-- Toast container -->
+    <div id="toast-container"></div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay confirm-modal">
+        <div class="modal glass-card">
+            <div class="confirm-modal-icon">
+                <i class="fa-solid fa-circle-exclamation"></i>
+            </div>
+            <h3 class="confirm-modal-title">Konfirmasi Hapus</h3>
+            <p id="confirmMessage" class="confirm-modal-message">Apakah Anda yakin ingin menghapus data ini?</p>
+            <div class="confirm-actions">
+                <button id="cancelConfirm" class="btn btn-outline">Batal</button>
+                <button id="submitConfirm" class="btn btn-primary" style="background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./service-worker.js');
+            });
+        }
+    </script>
+    <script src="app.js"></script>
+</body>
+</html>
